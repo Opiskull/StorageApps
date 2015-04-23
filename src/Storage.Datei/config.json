@@ -1,0 +1,8 @@
+﻿{
+	"DB": {
+		"MongoServerUrl": "mongodb://localhost/development"
+	},
+	"Configuration": {
+		"FileFolder":  "C:\\Files"
+	}
+}
