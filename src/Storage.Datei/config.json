@@ -1,8 +1,9 @@
 ﻿{
-	"DB": {
+	"Database": {
 		"MongoServerUrl": "mongodb://localhost/development"
 	},
 	"Configuration": {
-		"FileFolder":  "C:\\Files"
+		"FilesStoragePath": "C:\\Files",
+		"ShortUrlLength":  10
 	}
 }

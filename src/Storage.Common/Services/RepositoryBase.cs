@@ -12,41 +12,41 @@ namespace Storage.Common.Services
 {
 	public class RepositoryBase<T> : IRepository<T> where T : class, IEntity
 	{
-		private readonly IMongoCollection<T> _collection;
+		protected readonly IMongoCollection<T> Collection;
 		
 		public RepositoryBase(IMongoDatabase db)
 		{
-			_collection = db.GetCollection<T>(typeof(T).ForceCustomAttribute<CollectionNameAttribute>().CollectionName);
+			Collection = db.GetCollection<T>(typeof(T).ForceCustomAttribute<CollectionNameAttribute>().CollectionName);
 		} 
 		public RepositoryBase(IMongoDatabase db, string collectionName)
 		{
-			_collection = db.GetCollection<T>(collectionName);
+			Collection = db.GetCollection<T>(collectionName);
 		} 
 
-		public async Task<IEnumerable<T>> GetAllAsync()
+		public virtual async Task<IEnumerable<T>> GetAllAsync()
 		{
-			return await _collection.Find(filter => filter.Id != ObjectId.Empty).ToListAsync();
+			return await Collection.Find(filter => filter.Id != ObjectId.Empty).ToListAsync();
 		}
 
-		public Task<T> GetAsync(ObjectId id)
+		public virtual Task<T> GetAsync(ObjectId id)
 		{
-			return _collection.Find(filter => filter.Id == id).FirstOrDefaultAsync();
+			return Collection.Find(filter => filter.Id == id).FirstOrDefaultAsync();
 		}
 
-		public async Task<T> CreateAsync(T item)
+		public virtual async Task<T> CreateAsync(T item)
 		{
-			await _collection.InsertOneAsync(item);
+			await Collection.InsertOneAsync(item);
 			return item;
 		}
 
-		public Task UpdateAsync(ObjectId id, T item)
+		public virtual Task UpdateAsync(ObjectId id, T item)
 		{
-			return _collection.ReplaceOneAsync(filter => filter.Id == id, item);
+			return Collection.ReplaceOneAsync(filter => filter.Id == id, item);
 		}
 
-		public Task DeleteAsync(ObjectId id)
+		public virtual Task DeleteAsync(ObjectId id)
 		{
-			return _collection.DeleteOneAsync(item => item.Id == id);
+			return Collection.DeleteOneAsync(item => item.Id == id);
 		}
 	}
 }

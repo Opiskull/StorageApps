@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.ConfigurationModel;
+using Storage.Common.Extensions;
 
 namespace Storage.Datei.Services
 {
@@ -14,27 +15,28 @@ namespace Storage.Datei.Services
 
 	    public FileManager(IConfiguration configuration)
 	    {
-			_fileFolder = configuration.Get("Configuration:FileFolder");
+			_fileFolder = configuration.Get("Configuration:FilesStoragePath");
+			_fileFolder.ThrowIfArgumentNullOrEmpty("Configuration:FilesStoragePath","No FilesStoragePath provided!");
 	    }
 
-	    private string GetFilePath(string id)
+	    private string GetAbsoluteFilePath(string filename)
 	    {
-		    return Path.Combine(_fileFolder, id);
+		    return Path.Combine(_fileFolder, filename);
 		}
 
-	    public async Task StoreFile(string id, IFormFile formFile)
+	    public async Task StoreFileAsync(string fileName, IFormFile formFile, bool overwrite = false)
 	    {
-			var filePath = GetFilePath(id);
-			if (File.Exists(filePath))
-			{
-				throw new Exception("File already exists");
-			}
+			var filePath = GetAbsoluteFilePath(fileName);
+		    if (File.Exists(filePath) && !overwrite)
+		    {
+			    throw new Exception("File already exists");
+		    }
 		    await formFile.SaveAsAsync(filePath);
 	    }
 
-	    public string GetFile(string id)
+	    public string GetFile(string fileName)
 	    {
-		    var filePath = GetFilePath(id);
+		    var filePath = GetAbsoluteFilePath(fileName);
 		    if (!File.Exists(filePath))
 		    {
 				throw new FileNotFoundException("File was not found!");

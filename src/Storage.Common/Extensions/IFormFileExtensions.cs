@@ -10,10 +10,5 @@ namespace Storage.Common.Extensions
 	    {
 		    return ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
 		}
-
-	    public static long GetSize(this IFormFile formFile)
-	    {
-		    return ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).Size.GetValueOrDefault(0);
-	    }
     }
 }

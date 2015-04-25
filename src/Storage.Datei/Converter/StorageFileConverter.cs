@@ -11,9 +11,9 @@ namespace Storage.Datei.Converter
 		{
 			var storageFile = new StorageFile
 			{
-				ContentType = @from.ContentType,
-				FileName = @from.GetFileName(),
-				Size = @from.GetSize()
+				FileName = from.GetFileName(),
+				ContentType = from.ContentType,
+				Size = from.Length
 			};
 			return storageFile;
 		}
