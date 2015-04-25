@@ -10,15 +10,15 @@ using Storage.Common.Extensions;
 
 namespace Storage.Common.Services
 {
-	public class RepositoryBase<T> : IRepository<T> where T : class, IEntity
+	public class MongoDbRepositoryBase<T> : IRepository<T> where T : class, IMongoDbEntity
 	{
 		protected readonly IMongoCollection<T> Collection;
 		
-		public RepositoryBase(IMongoDatabase db)
+		public MongoDbRepositoryBase(IMongoDatabase db)
 		{
 			Collection = db.GetCollection<T>(typeof(T).ForceCustomAttribute<CollectionNameAttribute>().CollectionName);
 		} 
-		public RepositoryBase(IMongoDatabase db, string collectionName)
+		public MongoDbRepositoryBase(IMongoDatabase db, string collectionName)
 		{
 			Collection = db.GetCollection<T>(collectionName);
 		} 

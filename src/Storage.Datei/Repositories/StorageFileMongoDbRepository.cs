@@ -3,21 +3,31 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.Internal.DecisionTree;
 using Microsoft.Framework.ConfigurationModel;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Storage.Common.Services;
+using Storage.Datei.Interfaces;
 using Storage.Datei.Models;
 
 namespace Storage.Datei.Repositories
 {
-	public class StorageFileRepository : RepositoryBase<StorageFile>, IStorageFileRepository
+	public class StorageFileMongoDbRepository : MongoDbRepositoryBase<StorageFile>, IStorageFileRepository
 	{
 		private readonly RandomStringGenerator _randomStringGenerator;
 		private readonly IConfiguration _configuration;
 
-		public StorageFileRepository(IMongoDatabase db, RandomStringGenerator randomStringGenerator, IConfiguration configuration):base(db)
+		public StorageFileMongoDbRepository(IMongoDatabase db, RandomStringGenerator randomStringGenerator, IConfiguration configuration):base(db)
 		{
 			_randomStringGenerator = randomStringGenerator;
 			_configuration = configuration;
+			CreateIndexes();
+		}
+
+		private void CreateIndexes()
+		{
+			Collection.Indexes.CreateOneAsync(
+				new BsonDocumentIndexKeysDefinition<StorageFile>(BsonDocument.Parse("{ShortUrl:1}")),
+				new CreateIndexOptions {Unique = true});
 		}
 
 		public override async Task<StorageFile> CreateAsync(StorageFile item)

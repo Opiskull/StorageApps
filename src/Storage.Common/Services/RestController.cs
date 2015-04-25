@@ -10,14 +10,14 @@ using Storage.Common.Interfaces;
 
 namespace Storage.Common.Services
 {
-	public class RestController<T> : Controller where T : class, IEntity
+	public class RestController<T> : Controller where T : class, IMongoDbEntity
 	{
 		protected readonly ILogger _logger;
 		protected readonly IRepository<T> _repository;
 
 		public RestController(ILoggerFactory logFactory, IRepository<T> repository)
 		{
-			_logger = logFactory.Create("RestController");
+			_logger = logFactory.Create<RestController<T>>();
             this._repository = repository;
 		}
 
@@ -41,13 +41,13 @@ namespace Storage.Common.Services
         }
 
 		// POST api/controller
-		//[HttpPost]
-  //      public virtual async Task<JsonResult> Create([FromBody]T value)
-  //      {
-		//	_logger.WriteVerbose("Create");
-		//	var item = await _repository.CreateAsync(value);
-		//	return Json(item);
-  //      }
+		[HttpPost]
+		public virtual async Task<JsonResult> Create([FromBody]T value)
+		{
+			_logger.WriteVerbose("Create");
+			var item = await _repository.CreateAsync(value);
+			return Json(item);
+		}
 
 		// PUT api/controller/5
 		[HttpPut("{id}")]

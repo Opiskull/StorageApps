@@ -12,9 +12,12 @@ using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
+using Storage.Common.Middleware;
 using Storage.Common.Services;
 using Storage.Datei.Converter;
+using Storage.Datei.Interfaces;
 using Storage.Datei.Models;
 using Storage.Datei.Repositories;
 using Storage.Datei.Services;
@@ -44,10 +47,11 @@ namespace Storage.Datei
         {
 	        services.AddLogging();
             services.AddMvc();
-			services.AddSingleton<IStorageFileRepository, StorageFileRepository>();
+			services.AddSingleton<IStorageFileRepository, StorageFileMongoDbRepository>();
 	        services.AddSingleton<ILoggerFactory, LoggerFactory>();
 	        services.AddSingleton<FileManager>();
 	        services.AddSingleton<RandomStringGenerator>();
+	        services.AddSingleton<ErrorMiddleware>();
 	        services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
 			services.AddInstance(typeof (IConfiguration), Configuration);
 	        services.AddInstance(typeof (IMongoDatabase), OpenDatabase());
@@ -64,31 +68,14 @@ namespace Storage.Datei
 			// http://www.reddit.com/r/programming/comments/2c1dns/aspnet_mvc_6_vnext/
 
 
-
-			app.UseErrorHandler(errorApp =>
-	        {
-		        errorApp.Run(async context =>
-		        {
-			        var feature = context.GetFeature<IErrorHandlerFeature>();
-			        context.Response.StatusCode = 500;
-			        context.Response.ContentType = "application/json";
-			        await context.Response.WriteAsync(JsonConvert.SerializeObject(new {Error = feature.Error, Message = feature.Error.Message}));
-		        });
-	        });
-	        app.Use(async (ctx, next) =>
-	        {
-		        var requestLogger = loggerFactory.Create("Request");
-		        var startTime = DateTime.UtcNow;
-				requestLogger.WriteInformation("Start {0} [{1}]", ctx.Request.Method, ctx.Request.Path.Value);
-		        await next();
-		        var duration = DateTime.UtcNow - startTime;
-				requestLogger.WriteInformation("End {0} [{1}] [{2}ms]", ctx.Request.Method,ctx.Request.Path.Value,duration.TotalMilliseconds);
-	        });
+	        var errorMiddleware = app.ApplicationServices.GetService<ErrorMiddleware>();
+	        app.UseErrorHandler(errorMiddleware.ErrorHandler);
+	        app.UseMiddleware<RequestTimeMiddleware>();
 
 			//app.UseMiddleware<ContainerMiddleware>();
-            //app.UseStaticFiles();
-            // Add MVC to the request pipeline.
-            app.UseMvc(routes =>
+			//app.UseStaticFiles();
+			// Add MVC to the request pipeline.
+			app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",

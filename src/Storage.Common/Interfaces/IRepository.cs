@@ -6,7 +6,7 @@ using MongoDB.Bson;
 
 namespace Storage.Common.Interfaces
 {
-    public interface IRepository<T> where T : class, IEntity
+    public interface IRepository<T> where T : class, IMongoDbEntity
     {
 		Task<IEnumerable<T>> GetAllAsync();
 		Task<T> GetAsync(ObjectId id);
