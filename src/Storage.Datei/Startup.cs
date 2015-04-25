@@ -14,6 +14,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using Storage.Common.Interfaces;
 using Storage.Common.Services;
+using Storage.Datei.Converter;
 using Storage.Datei.Models;
 using Storage.Datei.Repositories;
 using Storage.Datei.Services;
@@ -32,7 +33,7 @@ namespace Storage.Datei
 
 	    private IMongoDatabase OpenDatabase()
 	    {
-			var mongoUrl = MongoUrl.Create(Configuration.Get("DB:MongoServerUrl"));
+			var mongoUrl = MongoUrl.Create(Configuration.Get("Database:MongoServerUrl"));
 			var client = new MongoClient(mongoUrl);
 		    return client.GetDatabase(mongoUrl.DatabaseName);
 	    }
@@ -46,7 +47,9 @@ namespace Storage.Datei
 			services.AddSingleton<IStorageFileRepository, StorageFileRepository>();
 	        services.AddSingleton<ILoggerFactory, LoggerFactory>();
 	        services.AddSingleton<FileManager>();
-	        services.AddInstance(typeof (IConfiguration), Configuration);
+	        services.AddSingleton<RandomStringGenerator>();
+	        services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
+			services.AddInstance(typeof (IConfiguration), Configuration);
 	        services.AddInstance(typeof (IMongoDatabase), OpenDatabase());
         }
 
