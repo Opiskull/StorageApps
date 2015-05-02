@@ -8,12 +8,12 @@ using Storage.Datei.Models;
 
 namespace Storage.Datei.Repositories
 {
-    public class StorageFileMongoDbRepository : MongoDbRepositoryBase<StorageFile>, IStorageFileRepository
+    public class StorageFileRepository : MongoDbRepositoryBase<StorageFile>, IStorageFileRepository
     {
         private readonly IConfiguration _configuration;
         private readonly RandomStringGenerator _randomStringGenerator;
 
-        public StorageFileMongoDbRepository(IMongoDatabase db, RandomStringGenerator randomStringGenerator,
+        public StorageFileRepository(IMongoDatabase db, RandomStringGenerator randomStringGenerator,
             IConfiguration configuration) : base(db)
         {
             _randomStringGenerator = randomStringGenerator;

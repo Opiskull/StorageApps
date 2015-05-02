@@ -39,11 +39,11 @@ namespace Storage.Datei
         {
             services.AddLogging();
             services.AddMvc();
-            services.AddSingleton<IStorageFileRepository, StorageFileMongoDbRepository>();
+            services.AddSingleton<IStorageFileRepository, StorageFileRepository>();
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton<FileManager>();
             services.AddSingleton<RandomStringGenerator>();
-            services.AddSingleton<ErrorMiddleware>();
+            services.AddSingleton<JsonErrorMiddleware>();
             services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
             services.AddInstance(typeof (IConfiguration), Configuration);
             services.AddInstance(typeof (IMongoDatabase), OpenDatabase());
@@ -60,7 +60,7 @@ namespace Storage.Datei
             // http://www.reddit.com/r/programming/comments/2c1dns/aspnet_mvc_6_vnext/
 
 
-            var errorMiddleware = app.ApplicationServices.GetService<ErrorMiddleware>();
+            var errorMiddleware = app.ApplicationServices.GetService<JsonErrorMiddleware>();
 
             app.UseErrorHandler(errorMiddleware.ErrorHandler);
             app.UseMiddleware<RequestTimeMiddleware>();

@@ -4,7 +4,7 @@ using Storage.Datei.Models;
 
 namespace Storage.Datei.Interfaces
 {
-    public interface IStorageFileRepository : IRepository<StorageFile>
+    public interface IStorageFileRepository : IMongoDbRepository<StorageFile>
     {
         Task<StorageFile> GetWithShortUrlAsync(string shortUrl);
         Task<bool> DoesShortUrlExistAsync(string shortUrl);

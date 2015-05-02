@@ -4,7 +4,7 @@ using Storage.Common.Services;
 
 namespace Storage.Datei.Models
 {
-    [CollectionName("storageFile")]
+    [MongoDbCollectionName("storageFile")]
     public class StorageFile : IMongoDbEntity
     {
         public string FileName { get; set; }

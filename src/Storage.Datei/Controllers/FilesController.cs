@@ -32,6 +32,7 @@ namespace Storage.Datei.Controllers
         [HttpGet("{shortUrl}/info")]
         public async Task<JsonResult> Info(string shortUrl)
         {
+            _logger.LogDebug("Info");
             var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
             if (storageFile == null) return new ItemNotFoundJsonResult();
             return Json(storageFile);
@@ -40,6 +41,7 @@ namespace Storage.Datei.Controllers
         [HttpGet("{shortUrl}")]
         public async Task<ActionResult> Download(string shortUrl)
         {
+            _logger.LogDebug("Download");
             var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
             if (storageFile == null) return new ItemNotFoundJsonResult();
             var filePath = _fileManager.GetFile(storageFile.Id.ToString());
@@ -49,6 +51,7 @@ namespace Storage.Datei.Controllers
         [HttpGet]
         public async Task<JsonResult> All()
         {
+            _logger.LogDebug("All");
             var files = await _storageFileRepository.GetAllAsync();
             return Json(files);
         }
@@ -56,6 +59,7 @@ namespace Storage.Datei.Controllers
         [HttpPut("{shortUrl}")]
         public async Task<JsonResult> Update(string shortUrl, string item, IFormFile file)
         {
+            _logger.LogDebug("Update");
             if (string.IsNullOrEmpty(item) && file == null)
             {
                 item.ThrowIfArgumentNullOrEmpty(nameof(item), "No item provided!");
@@ -80,6 +84,7 @@ namespace Storage.Datei.Controllers
         [HttpPost]
         public async Task<JsonResult> Create(string item, IFormFile file)
         {
+            _logger.LogDebug("Create");
             item.ThrowIfArgumentNullOrEmpty(nameof(item), "No item provided!");
             file.ThrowIfArgumentNull(nameof(file), "No file provided!");
 
