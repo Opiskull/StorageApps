@@ -5,6 +5,7 @@ using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using MongoDB.Driver;
+using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
 using Storage.Common.Middleware;
 using Storage.Common.Services;
@@ -42,8 +43,9 @@ namespace Storage.Datei
             services.AddSingleton<IStorageFileRepository, StorageFileRepository>();
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton<FileManager>();
-            services.AddSingleton<RandomStringGenerator>();
             services.AddSingleton<JsonErrorMiddleware>();
+            services.AddSingleton<RandomStringGenerator>();
+            services.AddSingleton<ShortUrlGenerator>();
             services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
             services.AddInstance(typeof (IConfiguration), Configuration);
             services.AddInstance(typeof (IMongoDatabase), OpenDatabase());
@@ -58,11 +60,7 @@ namespace Storage.Datei
             //middlewares: https://gist.github.com/maartenba/77ca6f9cfef50efa96ec
 
             // http://www.reddit.com/r/programming/comments/2c1dns/aspnet_mvc_6_vnext/
-
-
-            var errorMiddleware = app.ApplicationServices.GetService<JsonErrorMiddleware>();
-
-            app.UseErrorHandler(errorMiddleware.ErrorHandler);
+            app.UseJsonErrorHandler();
             app.UseMiddleware<RequestTimeMiddleware>();
 
             //app.UseMiddleware<ContainerMiddleware>();

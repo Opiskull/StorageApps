@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.Logging;
@@ -16,7 +15,7 @@ namespace Storage.Common.Middleware
             _logger = loggerFactory.CreateLogger("Error");
         }
 
-        private async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
             var feature = context.GetFeature<IErrorHandlerFeature>();
             context.Response.StatusCode = 500;
@@ -27,11 +26,6 @@ namespace Storage.Common.Middleware
                 feature.Error,
                 feature.Error.Message
             }.ToJson());
-        }
-
-        public void ErrorHandler(IApplicationBuilder errorApp)
-        {
-            errorApp.Run(Invoke);
         }
     }
 }

@@ -6,7 +6,6 @@ namespace Storage.Common.Services
     {
         private const string CONFIGURATION_SHORTURL_LENGTH = "Configuration:ShortUrlLength";
         private const int DEFAULT_LENGTH = 10;
-
         private readonly IConfiguration _configuration;
         private readonly RandomStringGenerator _randomStringGenerator;
 
