@@ -17,11 +17,6 @@ namespace Storage.Common.Services
                 db.GetCollection<T>(typeof (T).ForceCustomAttribute<MongoDbCollectionNameAttribute>().CollectionName);
         }
 
-        public MongoDbRepositoryBase(IMongoDatabase db, string collectionName)
-        {
-            Collection = db.GetCollection<T>(collectionName);
-        }
-
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await Collection.Find(filter => filter.Id != ObjectId.Empty).ToListAsync();
