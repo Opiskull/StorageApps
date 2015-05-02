@@ -16,14 +16,14 @@ namespace Storage.Common.Middleware
 
 		public ErrorMiddleware(ILoggerFactory loggerFactory)
 		{
-			_logger = loggerFactory.Create("Error");
+			_logger = loggerFactory.CreateLogger("Error");
 		}
 	    private async Task Invoke(HttpContext context)
 	    {
 		    var feature = context.GetFeature<IErrorHandlerFeature>();
 		    context.Response.StatusCode = 500;
 		    context.Response.ContentType = "application/json";
-			_logger.WriteError("Error in Application",feature.Error);
+			_logger.LogError("Error in Application",feature.Error);
 		    await context.Response.WriteAsync(new
 		    {
 			    Error = feature.Error,

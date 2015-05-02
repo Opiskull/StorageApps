@@ -17,7 +17,7 @@ namespace Storage.Common.Services
 
 		public RestController(ILoggerFactory logFactory, IRepository<T> repository)
 		{
-			_logger = logFactory.Create<RestController<T>>();
+			_logger = logFactory.CreateLogger<RestController<T>>();
             this._repository = repository;
 		}
 
@@ -25,7 +25,7 @@ namespace Storage.Common.Services
 		[HttpGet]
         public virtual async Task<JsonResult> GetAll()
         {
-			_logger.WriteVerbose("GetAll");
+			_logger.LogVerbose("GetAll");
 			var items = await _repository.GetAllAsync();
 
 			return Json(items);
@@ -35,7 +35,7 @@ namespace Storage.Common.Services
 		[HttpGet("{id}")]
         public virtual async Task<JsonResult> Get(string id)
         {
-			_logger.WriteVerbose("Get");
+			_logger.LogVerbose("Get");
 			var item = await _repository.GetAsync(ObjectId.Parse(id));
 			return Json(item);
         }
@@ -44,7 +44,7 @@ namespace Storage.Common.Services
 		[HttpPost]
 		public virtual async Task<JsonResult> Create([FromBody]T value)
 		{
-			_logger.WriteVerbose("Create");
+			_logger.LogVerbose("Create");
 			var item = await _repository.CreateAsync(value);
 			return Json(item);
 		}
@@ -53,7 +53,7 @@ namespace Storage.Common.Services
 		[HttpPut("{id}")]
         public virtual async Task Update(string id, [FromBody]T value)
         {
-			_logger.WriteVerbose("Update");
+			_logger.LogVerbose("Update");
 			await _repository.UpdateAsync(ObjectId.Parse(id),value);
         }
 
@@ -61,7 +61,7 @@ namespace Storage.Common.Services
 		[HttpDelete("{id}")]
         public virtual async void Delete(string id)
         {
-			_logger.WriteVerbose("Delete");
+			_logger.LogVerbose("Delete");
 			await _repository.DeleteAsync(ObjectId.Parse(id));
         }
     }

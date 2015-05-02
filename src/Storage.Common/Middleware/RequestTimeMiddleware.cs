@@ -16,7 +16,7 @@ namespace Storage.Common.Middleware
 	    public RequestTimeMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
 	    {
 		    _next = next;
-		    _logger = loggerFactory.Create("Request");
+		    _logger = loggerFactory.CreateLogger("Request");
 	    }
 
 	    public async Task Invoke(HttpContext ctx)
@@ -26,7 +26,7 @@ namespace Storage.Common.Middleware
 				var watch = new Stopwatch();
 				watch.Start();
 				await _next(ctx);
-				_logger.WriteInformation($"{ctx.Request.Method} [{ctx.Request.Path.Value}] [{watch.ElapsedMilliseconds}ms]");
+				_logger.LogInformation($"{ctx.Request.Method} [{ctx.Request.Path.Value}] [{watch.ElapsedMilliseconds}ms]");
 			}
 	    }
     }

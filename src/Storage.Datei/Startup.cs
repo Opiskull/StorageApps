@@ -1,18 +1,10 @@
-﻿using System;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Versioning;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Diagnostics;
+﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
-using Microsoft.AspNet.RequestContainer;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
-using Microsoft.Framework.Logging.Console;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
 using Storage.Common.Middleware;
 using Storage.Common.Services;
@@ -26,62 +18,57 @@ namespace Storage.Datei
 {
     public class Startup
     {
-		private IConfiguration Configuration { get; set; }
-
         public Startup(IHostingEnvironment env)
         {
-	        Configuration = new Configuration()
-				.AddJsonFile("config.json");
+            Configuration = new Configuration()
+                .AddJsonFile("config.json");
         }
 
-	    private IMongoDatabase OpenDatabase()
-	    {
-			var mongoUrl = MongoUrl.Create(Configuration.Get("Database:MongoServerUrl"));
-			var client = new MongoClient(mongoUrl);
-		    return client.GetDatabase(mongoUrl.DatabaseName);
-	    }
+        private IConfiguration Configuration { get; }
 
-	    // This method gets called by a runtime.
+        private IMongoDatabase OpenDatabase()
+        {
+            var mongoUrl = MongoUrl.Create(Configuration.Get("Database:MongoServerUrl"));
+            var client = new MongoClient(mongoUrl);
+            return client.GetDatabase(mongoUrl.DatabaseName);
+        }
+
+        // This method gets called by a runtime.
         // Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-	        services.AddLogging();
+            services.AddLogging();
             services.AddMvc();
-			services.AddSingleton<IStorageFileRepository, StorageFileMongoDbRepository>();
-	        services.AddSingleton<ILoggerFactory, LoggerFactory>();
-	        services.AddSingleton<FileManager>();
-	        services.AddSingleton<RandomStringGenerator>();
-	        services.AddSingleton<ErrorMiddleware>();
-	        services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
-			services.AddInstance(typeof (IConfiguration), Configuration);
-	        services.AddInstance(typeof (IMongoDatabase), OpenDatabase());
+            services.AddSingleton<IStorageFileRepository, StorageFileMongoDbRepository>();
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            services.AddSingleton<FileManager>();
+            services.AddSingleton<RandomStringGenerator>();
+            services.AddSingleton<ErrorMiddleware>();
+            services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
+            services.AddInstance(typeof (IConfiguration), Configuration);
+            services.AddInstance(typeof (IMongoDatabase), OpenDatabase());
         }
 
         // Configure is called after ConfigureServices is called.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-	        loggerFactory.AddConsole();
+            loggerFactory.AddConsole();
 
 
-			//middlewares: https://gist.github.com/maartenba/77ca6f9cfef50efa96ec
+            //middlewares: https://gist.github.com/maartenba/77ca6f9cfef50efa96ec
 
-			// http://www.reddit.com/r/programming/comments/2c1dns/aspnet_mvc_6_vnext/
+            // http://www.reddit.com/r/programming/comments/2c1dns/aspnet_mvc_6_vnext/
 
 
-	        var errorMiddleware = app.ApplicationServices.GetService<ErrorMiddleware>();
-	        app.UseErrorHandler(errorMiddleware.ErrorHandler);
-	        app.UseMiddleware<RequestTimeMiddleware>();
+            var errorMiddleware = app.ApplicationServices.GetService<ErrorMiddleware>();
 
-			//app.UseMiddleware<ContainerMiddleware>();
-			//app.UseStaticFiles();
-			// Add MVC to the request pipeline.
-			app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action}/{id?}",
-					defaults: new {  });
-            });
-		}
+            app.UseErrorHandler(errorMiddleware.ErrorHandler);
+            app.UseMiddleware<RequestTimeMiddleware>();
+
+            //app.UseMiddleware<ContainerMiddleware>();
+            //app.UseStaticFiles();
+            // Add MVC to the request pipeline.
+            app.UseMvc(routes => { routes.MapRoute("default", "{controller}/{action}/{id?}", new {}); });
+        }
     }
 }
