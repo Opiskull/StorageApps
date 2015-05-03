@@ -22,13 +22,13 @@ namespace Storage.Common.Services
             return FindWithShortUrl(shortUrl).FirstOrDefaultAsync();
         }
 
-        public override async Task<T> CreateAsync(T item)
+        public async Task<T> CreateWithShortUrlAsync(T item)
         {
             item.ShortUrl = await GenerateUniqueShortUrl();
-            return await base.CreateAsync(item);
+            return await CreateAsync(item);
         }
 
-        private async Task<bool> DoesShortUrlExistAsync(string shortUrl)
+        public async Task<bool> DoesShortUrlExistAsync(string shortUrl)
         {
             var count = await FindWithShortUrl(shortUrl).CountAsync();
             return count > 1;

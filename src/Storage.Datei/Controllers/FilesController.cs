@@ -90,7 +90,7 @@ namespace Storage.Datei.Controllers
 
             var storage = _storageFileConverter.Convert(file);
             item.UrlDecode().PopulateObject(storage);
-            var storageFile = await _storageFileRepository.CreateAsync(storage);
+            var storageFile = await _storageFileRepository.CreateWithShortUrlAsync(storage);
             try
             {
                 await _fileManager.StoreFileAsync(storageFile.Id.ToString(), file);
