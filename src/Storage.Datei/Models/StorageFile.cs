@@ -12,16 +12,22 @@ namespace Storage.Datei.Models
     {
         [DataMember(Name = "fileName")]
         public string FileName { get; set; }
+
         [DataMember(Name = "contentType")]
         public string ContentType { get; set; }
+
         [DataMember(Name = "size")]
         public long Size { get; set; }
+
         [DataMember(Name = "created")]
         public DateTime Created { get; set; }
+
         [DataMember(Name = "id")]
         public ObjectId Id { get; set; }
+
         [DataMember(Name = "shortUrl")]
         public string ShortUrl { get; set; }
+
         [DataMember(Name = "tags")]
         public string[] Tags { get; set; }
     }

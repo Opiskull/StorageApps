@@ -12,7 +12,9 @@ using Storage.Datei.Services;
 
 namespace Storage.Datei.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiExplorerSettings(GroupName = "Files")]
+    [Produces("application/json")]
+    [Route("api/v1/[controller]")]
     public class FilesController : Controller
     {
         private readonly FileManager _fileManager;
