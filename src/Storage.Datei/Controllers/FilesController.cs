@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
@@ -13,7 +15,6 @@ using Storage.Datei.Services;
 namespace Storage.Datei.Controllers
 {
     [ApiExplorerSettings(GroupName = "Files")]
-    [Produces("application/json")]
     [Route("api/v1/[controller]")]
     public class FilesController : Controller
     {
@@ -32,34 +33,34 @@ namespace Storage.Datei.Controllers
         }
 
         [HttpGet("{shortUrl}/info")]
-        public async Task<JsonResult> Info(string shortUrl)
+        public async Task<StorageFile> Info(string shortUrl)
         {
             _logger.LogDebug("Info");
             var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
-            if (storageFile == null) return new ItemNotFoundJsonResult();
-            return Json(storageFile);
+            if (storageFile == null) throw new ItemNotFoundException();
+            return storageFile;
         }
 
         [HttpGet("{shortUrl}")]
-        public async Task<ActionResult> Download(string shortUrl)
+        public async Task<IActionResult> Download(string shortUrl)
         {
             _logger.LogDebug("Download");
             var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
-            if (storageFile == null) return new ItemNotFoundJsonResult();
+            if (storageFile == null) throw new ItemNotFoundException();
             var filePath = _fileManager.GetFile(storageFile.Id.ToString());
             return File(filePath, storageFile.ContentType, storageFile.FileName);
         }
 
         [HttpGet]
-        public async Task<JsonResult> All()
+        public async Task<StorageFile[]> All()
         {
             _logger.LogDebug("All");
             var files = await _storageFileRepository.GetAllAsync();
-            return Json(files);
+            return files.ToArray();
         }
 
         [HttpPut("{shortUrl}")]
-        public async Task<JsonResult> Update(string shortUrl, string item, IFormFile file)
+        public async Task<StorageFile> Update(string shortUrl, string item, IFormFile file)
         {
             _logger.LogDebug("Update");
             if (string.IsNullOrEmpty(item) && file == null)
@@ -68,7 +69,7 @@ namespace Storage.Datei.Controllers
                 file.ThrowIfArgumentNull(nameof(file), "No file provided!");
             }
             var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
-            if (storageFile == null) return new ItemNotFoundJsonResult();
+            if (storageFile == null) throw new ItemNotFoundException();
             if (file != null)
             {
                 storageFile = _storageFileConverter.Convert(file);
@@ -80,11 +81,11 @@ namespace Storage.Datei.Controllers
             }
 
             await _storageFileRepository.UpdateAsync(storageFile.Id, storageFile);
-            return Json(storageFile);
+            return storageFile;
         }
 
         [HttpPost]
-        public async Task<JsonResult> Create(string item, IFormFile file)
+        public async Task<StorageFile> Create(string item, IFormFile file)
         {
             _logger.LogDebug("Create");
             item.ThrowIfArgumentNullOrEmpty(nameof(item), "No item provided!");
@@ -102,7 +103,7 @@ namespace Storage.Datei.Controllers
                 await _storageFileRepository.DeleteAsync(storage.Id);
                 throw;
             }
-            return Json(storageFile);
+            return storageFile;
         }
     }
 }

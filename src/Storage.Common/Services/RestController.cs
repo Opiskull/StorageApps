@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.Logging;
 using MongoDB.Bson;
@@ -21,38 +23,39 @@ namespace Storage.Common.Services
 
         // GET: api/controller
         [HttpGet]
-        public virtual async Task<JsonResult> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAll()
         {
             _logger.LogVerbose("GetAll");
             var items = await Repository.GetAllAsync();
 
-            return Json(items);
+            return items;
         }
 
         // GET api/controller/5
         [HttpGet("{id}")]
-        public virtual async Task<JsonResult> Get(string id)
+        public virtual async Task<T> Get(string id)
         {
             _logger.LogVerbose("Get");
             var item = await Repository.GetAsync(ObjectId.Parse(id));
-            return Json(item);
+            return item;
         }
 
         // POST api/controller
         [HttpPost]
-        public virtual async Task<JsonResult> Create([FromBody] T value)
+        public virtual async Task<T> Create([FromBody] T item)
         {
             _logger.LogVerbose("Create");
-            var item = await Repository.CreateAsync(value);
-            return Json(item);
+            var createdItem = await Repository.CreateAsync(item);
+            return createdItem;
         }
 
         // PUT api/controller/5
         [HttpPut("{id}")]
-        public virtual async Task Update(string id, [FromBody] T value)
+        public virtual async Task<T> Update(string id, [FromBody] T item)
         {
             _logger.LogVerbose("Update");
-            await Repository.UpdateAsync(ObjectId.Parse(id), value);
+            await Repository.UpdateAsync(ObjectId.Parse(id), item);
+            return item;
         }
 
         // DELETE api/controller/5

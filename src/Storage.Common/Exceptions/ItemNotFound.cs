@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using System;
 
 namespace Storage.Common.Exceptions
 {
-    public class ItemNotFoundJsonResult : JsonResult
+    public class ItemNotFoundException : Exception
     {
-        public ItemNotFoundJsonResult() : base(new {})
+        public ItemNotFoundException() : base("Item not found!")
         {
-            StatusCode = 404;
-            Value = new {Error = "Item not found!"};
         }
     }
 }

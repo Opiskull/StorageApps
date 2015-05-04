@@ -4,6 +4,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
+using Microsoft.Net.Http.Server;
 using MongoDB.Driver;
 using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
@@ -41,10 +42,12 @@ namespace Storage.Datei
             services.AddLogging();
             services.AddMvc();
             services.AddSingleton<IStorageFileRepository, StorageFileRepository>();
+            services.AddSingleton<IBlogPostRepository, BlogPostRepository>();
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton<FileManager>();
             services.AddSingleton<JsonErrorMiddleware>();
             services.AddSingleton<RandomStringGenerator>();
+            services.AddSingleton<MarkdownDocumentationGenerator>();
             services.AddSingleton<ShortUrlGenerator>();
             services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
             //services.AddSingleton<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
@@ -67,7 +70,7 @@ namespace Storage.Datei
             //app.UseMiddleware<ContainerMiddleware>();
             //app.UseStaticFiles();
             // Add MVC to the request pipeline.
-            app.UseMvc(routes => { routes.MapRoute("default", "{controller}/{action}/{id?}", new {}); });
+            app.UseMvc(routes => { routes.MapRoute("default", "{controller}/{action}/{id?}", new { }); });
         }
     }
 }
