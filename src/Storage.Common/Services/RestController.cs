@@ -53,7 +53,8 @@ namespace Storage.Common.Services
         public virtual async Task<T> Update(string id, [FromBody] T item)
         {
             _logger.LogVerbose("Update");
-            await Repository.UpdateAsync(ObjectId.Parse(id), item);
+            item.Id = ObjectId.Parse(id);
+            await Repository.UpdateAsync(item.Id, item);
             return item;
         }
 

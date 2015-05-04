@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Diagnostics;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
@@ -19,7 +22,7 @@ namespace Storage.Common.Services
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await Collection.Find(filter => filter.Id != ObjectId.Empty).ToListAsync();
+            return await Collection.Find(new BsonDocument()).ToListAsync();
         }
 
         public virtual Task<T> GetAsync(ObjectId id)

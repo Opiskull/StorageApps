@@ -20,7 +20,7 @@ namespace Storage.Datei.Models
         public long Size { get; set; }
 
         [DataMember(Name = "created")]
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         [DataMember(Name = "id")]
         public ObjectId Id { get; set; }

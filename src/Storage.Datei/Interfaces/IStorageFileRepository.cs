@@ -3,7 +3,7 @@ using Storage.Datei.Models;
 
 namespace Storage.Datei.Interfaces
 {
-    public interface IStorageFileRepository : IMongoDbRepository<StorageFile>, IMongoDbShortUrlRepository<StorageFile>
+    public interface IStorageFileRepository : IMongoDbShortUrlRepository<StorageFile>
     {
     }
 }
