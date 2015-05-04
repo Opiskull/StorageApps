@@ -15,12 +15,13 @@ namespace Storage.Common.Controllers
         private readonly MarkdownDocumentationGenerator _markdownDocumentationGenerator;
         private readonly IApiDescriptionGroupCollectionProvider _provider;
 
-        public DocsController(IApiDescriptionGroupCollectionProvider provider, MarkdownDocumentationGenerator markdownDocumentationGenerator)
+        public DocsController(IApiDescriptionGroupCollectionProvider provider,
+            MarkdownDocumentationGenerator markdownDocumentationGenerator)
         {
             _provider = provider;
             _markdownDocumentationGenerator = markdownDocumentationGenerator;
         }
-        
+
         [HttpGet("api.{format}")]
         [HttpGet("api")]
         public IActionResult Api(string format = "html")

@@ -4,7 +4,6 @@ using Microsoft.AspNet.Http;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
-using Microsoft.Net.Http.Server;
 using MongoDB.Driver;
 using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
@@ -70,7 +69,7 @@ namespace Storage.Datei
             //app.UseMiddleware<ContainerMiddleware>();
             //app.UseStaticFiles();
             // Add MVC to the request pipeline.
-            app.UseMvc(routes => { routes.MapRoute("default", "{controller}/{action}/{id?}", new { }); });
+            app.UseMvc(routes => { routes.MapRoute("default", "{controller}/{action}/{id?}", new {}); });
         }
     }
 }
