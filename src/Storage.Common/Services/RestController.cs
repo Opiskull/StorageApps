@@ -12,9 +12,9 @@ namespace Storage.Common.Services
     public class RestController<T> : Controller where T : class, IMongoDbEntity
     {
         protected readonly ILogger _logger;
-        protected readonly IMongoDbRepository<T> Repository;
+        protected readonly IMongoDbCrudRepository<T> Repository;
 
-        public RestController(ILoggerFactory logFactory, IMongoDbRepository<T> repository)
+        public RestController(ILoggerFactory logFactory, IMongoDbCrudRepository<T> repository)
         {
             _logger = logFactory.CreateLogger<RestController<T>>();
             Repository = repository;
@@ -26,7 +26,6 @@ namespace Storage.Common.Services
         {
             _logger.LogVerbose("GetAll");
             var items = await Repository.GetAllAsync();
-
             return items;
         }
 

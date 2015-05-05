@@ -5,7 +5,7 @@ using Storage.Datei.Models;
 
 namespace Storage.Datei.Interfaces
 {
-    public interface IBlogPostRepository : IMongoDbRepository<BlogPost>
+    public interface IBlogPostRepository : IMongoDbCrudRepository<BlogPost>
     {
         Task<List<BlogPost>> GetLatestAsync(int? count,int? skip);
         Task<BlogPost> GetWithPermLinkAsync(string permlink);

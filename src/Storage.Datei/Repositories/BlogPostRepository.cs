@@ -10,7 +10,7 @@ using Storage.Datei.Models;
 
 namespace Storage.Datei.Repositories
 {
-    public class BlogPostRepository : MongoDbRepositoryBase<BlogPost>, IBlogPostRepository
+    public class BlogPostRepository : MongoDbCrudRepositoryBase<BlogPost>, IBlogPostRepository
     {
         private readonly ShortUrlGenerator _shortUrlGenerator;
 

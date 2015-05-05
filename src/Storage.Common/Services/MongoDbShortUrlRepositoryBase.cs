@@ -1,34 +1,36 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Storage.Common.Interfaces;
 
 namespace Storage.Common.Services
 {
-    public class MongoDbShortUrlRepositoryBase<T> : MongoDbRepositoryBase<T>, IMongoDbShortUrlRepository<T>
+    public class MongoDbShortUrlRepositoryBase<T> : MongoDbRepositoryBase<T>,IMongoDbShortUrlRepository<T>
         where T : class, IMongoDbEntity, IShortUrlEntity
     {
         private const string SHORTURL_INDEX = "{ShortUrl:1}";
         private readonly ShortUrlGenerator _shortUrlGenerator;
 
-        public MongoDbShortUrlRepositoryBase(IMongoDatabase db, ShortUrlGenerator shortUrlGenerator) : base(db)
+        public MongoDbShortUrlRepositoryBase(IMongoDatabase db, ShortUrlGenerator shortUrlGenerator):base(db)
         {
             _shortUrlGenerator = shortUrlGenerator;
             CreateIndexes();
         }
 
-        public Task<T> GetWithShortUrlAsync(string shortUrl)
+        public virtual Task<T> GetWithShortUrlAsync(string shortUrl)
         {
             return FindWithShortUrl(shortUrl).FirstOrDefaultAsync();
         }
 
-        public async Task<T> CreateWithShortUrlAsync(T item)
+        public virtual async Task<T> CreateWithShortUrlAsync(T item)
         {
             item.ShortUrl = await GenerateUniqueShortUrl();
-            return await CreateAsync(item);
+            await Collection.InsertOneAsync(item);
+            return item;
         }
 
-        public async Task<bool> DoesShortUrlExistAsync(string shortUrl)
+        public virtual async Task<bool> DoesShortUrlExistAsync(string shortUrl)
         {
             var count = await FindWithShortUrl(shortUrl).CountAsync();
             return count > 1;

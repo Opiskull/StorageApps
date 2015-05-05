@@ -49,7 +49,6 @@ namespace Storage.Datei
             services.AddSingleton<MarkdownDocumentationGenerator>();
             services.AddSingleton<ShortUrlGenerator>();
             services.AddSingleton<IConverter<IFormFile, StorageFile>, StorageFileConverter>();
-            //services.AddSingleton<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
             services.AddInstance(typeof (IConfiguration), Configuration);
             services.AddInstance(typeof (IMongoDatabase), OpenDatabase());
         }
