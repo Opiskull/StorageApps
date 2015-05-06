@@ -18,26 +18,33 @@ namespace Storage.Common.Services
 
                 foreach (var description in group.Items)
                 {
-                    stringBuilder.AppendLine($"### {description.ActionDescriptor.Name}");
-                    stringBuilder.AppendLine($"{description.HttpMethod} {description.RelativePath}");
-                    stringBuilder.AppendLine("#### Parameters");
+                    stringBuilder
+                        .AppendLine($"### {description.ActionDescriptor.Name}")
+                        .AppendLine($"    {description.HttpMethod} {description.RelativePath}");
 
-                    foreach (var parameter in description.ParameterDescriptions)
+                    if (description.ParameterDescriptions.Count > 0)
                     {
-                        stringBuilder.AppendLine($"- {parameter.Name} ({parameter.Type.FullName})");
+                        stringBuilder.AppendLine("#### Parameters");
+                        foreach (var parameter in description.ParameterDescriptions)
+                        {
+                            stringBuilder
+                                .AppendLine($"> {parameter.Name} ({parameter.Type.Name})")
+                                .AppendLine();
+                        }
                     }
-
                     if (description.ResponseType != null)
                     {
-                        stringBuilder.AppendLine("  #### Response");
+                        stringBuilder.AppendLine("#### Response");
                         if (description.ResponseType.IsGenericType)
                         {
                             var genericType = description.ResponseType.GetGenericArguments()[0];
-                            stringBuilder.AppendLine($"  {genericType.Name}[]");
+                            stringBuilder
+                                .AppendLine($"> {genericType.Name}[]");
                         }
                         else
                         {
-                            stringBuilder.AppendLine($"  {description.ResponseType}");
+                            stringBuilder
+                                .AppendLine($"> {description.ResponseType.Name}");
                         }
                     }
                 }
