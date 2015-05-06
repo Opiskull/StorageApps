@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Diagnostics;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
-using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
 
 namespace Storage.Common.Services
 {
-    public class MongoDbCrudRepositoryBase<T> : MongoDbRepositoryBase<T>, IMongoDbCrudRepository<T> where T : class, IMongoDbEntity
+    public class MongoDbCrudRepositoryBase<T> : MongoDbRepositoryBase<T>, IMongoDbCrudRepository<T>
+        where T : class, IMongoDbEntity
     {
-        public MongoDbCrudRepositoryBase(IMongoDatabase db):base(db)
+        public MongoDbCrudRepositoryBase(IMongoDatabase db) : base(db)
         {
         }
 
@@ -41,6 +38,5 @@ namespace Storage.Common.Services
         {
             return Collection.DeleteOneAsync(item => item.Id == id);
         }
-
     }
 }

@@ -7,7 +7,7 @@ namespace Storage.Datei.Interfaces
 {
     public interface IBlogPostRepository : IMongoDbCrudRepository<BlogPost>
     {
-        Task<List<BlogPost>> GetLatestAsync(int? count,int? skip);
+        Task<List<BlogPost>> GetLatestAsync(int? count, int? skip);
         Task<BlogPost> GetWithPermLinkAsync(string permlink);
     }
 }

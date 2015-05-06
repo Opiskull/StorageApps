@@ -18,13 +18,13 @@ namespace Storage.Datei.Models
         [DataMember(Name = "body")]
         public string Body { get; set; }
 
-        [DataMember(Name = "id")]
-        public ObjectId Id { get; set; }
-
-        [DataMember(Name="permLink")]
+        [DataMember(Name = "permLink")]
         public string PermLink { get; set; }
 
         [DataMember(Name = "created")]
         public DateTime? Created { get; set; }
+
+        [DataMember(Name = "id")]
+        public ObjectId Id { get; set; }
     }
 }

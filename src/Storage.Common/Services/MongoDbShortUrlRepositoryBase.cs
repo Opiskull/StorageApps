@@ -1,18 +1,17 @@
-﻿using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Storage.Common.Interfaces;
 
 namespace Storage.Common.Services
 {
-    public class MongoDbShortUrlRepositoryBase<T> : MongoDbRepositoryBase<T>,IMongoDbShortUrlRepository<T>
+    public class MongoDbShortUrlRepositoryBase<T> : MongoDbRepositoryBase<T>, IMongoDbShortUrlRepository<T>
         where T : class, IMongoDbEntity, IShortUrlEntity
     {
         private const string SHORTURL_INDEX = "{ShortUrl:1}";
         private readonly ShortUrlGenerator _shortUrlGenerator;
 
-        public MongoDbShortUrlRepositoryBase(IMongoDatabase db, ShortUrlGenerator shortUrlGenerator):base(db)
+        public MongoDbShortUrlRepositoryBase(IMongoDatabase db, ShortUrlGenerator shortUrlGenerator) : base(db)
         {
             _shortUrlGenerator = shortUrlGenerator;
             CreateIndexes();

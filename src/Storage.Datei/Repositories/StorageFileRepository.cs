@@ -14,7 +14,8 @@ namespace Storage.Datei.Repositories
     {
         private readonly IMongoDbCrudRepository<StorageFile> _crudRepository;
 
-        public StorageFileRepository(IMongoDatabase db, ShortUrlGenerator shortUrlGenerator,IMongoDbCrudRepository<StorageFile> crudRepository)
+        public StorageFileRepository(IMongoDatabase db, ShortUrlGenerator shortUrlGenerator,
+            IMongoDbCrudRepository<StorageFile> crudRepository)
             : base(db, shortUrlGenerator)
         {
             _crudRepository = crudRepository;
