@@ -20,7 +20,10 @@ namespace Storage.Common.Models
         [DataMember(Name = "message")]
         public string Message { get; set; }
 
+        [IgnoreDataMember]
         public string ContentType { get; set; }
+
+        [IgnoreDataMember]
         public int StatusCode { get; set; }
     }
 }

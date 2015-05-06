@@ -23,7 +23,7 @@ namespace Storage.Datei.Repositories
 
         public override Task<StorageFile> CreateWithShortUrlAsync(StorageFile item)
         {
-            item.Created = new DateTime();
+            item.Created = DateTime.Now;
             return base.CreateWithShortUrlAsync(item);
         }
 

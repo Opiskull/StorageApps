@@ -31,23 +31,37 @@ namespace Storage.Datei.Controllers
             _storageFileConverter = storageFileConverter;
         }
 
-        [HttpGet("{shortUrl}/info")]
-        public async Task<StorageFile> Info(string shortUrl)
+        private async Task<StorageFile> GetFileWithShortUrlAsync(string shortUrl)
         {
-            _logger.LogDebug("Info");
             var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
             if (storageFile == null) throw new ItemNotFoundException();
             return storageFile;
         }
 
-        [HttpGet("{shortUrl}")]
+        [HttpGet("{shortUrl}/info")]
+        public async Task<StorageFile> Info(string shortUrl)
+        {
+            _logger.LogDebug("Info");
+            var storageFile = await GetFileWithShortUrlAsync(shortUrl);
+            return storageFile;
+        }
+
+        [HttpGet("{shortUrl}/download")]
         public async Task<IActionResult> Download(string shortUrl)
         {
             _logger.LogDebug("Download");
-            var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
-            if (storageFile == null) throw new ItemNotFoundException();
+            var storageFile = await GetFileWithShortUrlAsync(shortUrl);
             var filePath = _fileManager.GetFile(storageFile.Id.ToString());
             return File(filePath, storageFile.ContentType, storageFile.FileName);
+        }
+
+        [HttpGet("{shortUrl}")]
+        public async Task<IActionResult> ViewFile(string shortUrl)
+        {
+            _logger.LogDebug("Download");
+            var storageFile = await GetFileWithShortUrlAsync(shortUrl);
+            var filePath = _fileManager.GetFile(storageFile.Id.ToString());
+            return File(filePath, storageFile.ContentType);
         }
 
         [HttpGet]
@@ -67,8 +81,7 @@ namespace Storage.Datei.Controllers
                 item.ThrowIfArgumentNullOrEmpty(nameof(item), "No item provided!");
                 file.ThrowIfArgumentNull(nameof(file), "No file provided!");
             }
-            var storageFile = await _storageFileRepository.GetWithShortUrlAsync(shortUrl);
-            if (storageFile == null) throw new ItemNotFoundException();
+            var storageFile = await GetFileWithShortUrlAsync(shortUrl);
             if (file != null)
             {
                 storageFile = _storageFileConverter.Convert(file);

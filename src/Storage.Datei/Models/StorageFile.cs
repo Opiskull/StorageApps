@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using MongoDB.Bson;
 using Storage.Common.Interfaces;
+using Storage.Common.Models;
 using Storage.Common.Services;
 
 namespace Storage.Datei.Models
@@ -29,6 +31,6 @@ namespace Storage.Datei.Models
         public string ShortUrl { get; set; }
 
         [DataMember(Name = "tags")]
-        public string[] Tags { get; set; }
+        public IEnumerable<Tag> Tags { get; set; }
     }
 }

@@ -20,5 +20,14 @@ namespace Storage.Common.Extensions
         {
             JsonConvert.PopulateObject(input, target);
         }
+
+        public static string ToJson(this object input)
+        {
+            return JsonConvert.SerializeObject(input,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+        }
     }
 }

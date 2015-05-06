@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.Logging;
-using MongoDB.Bson;
 using Storage.Common.Exceptions;
+using Storage.Common.Extensions;
 using Storage.Common.Models;
 
 namespace Storage.Common.Middleware
@@ -23,7 +23,11 @@ namespace Storage.Common.Middleware
         {
             if (exception is ItemNotFoundException)
             {
-                return new JsonHttpError {Message = "Item not found!", StatusCode = (int) HttpStatusCode.BadRequest};
+                return new JsonHttpError
+                {
+                    Message = "Item not found!",
+                    StatusCode = (int) HttpStatusCode.BadRequest
+                };
             }
             return new JsonHttpError
             {

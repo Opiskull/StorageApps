@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using Storage.Common.Extensions;
 using Storage.Common.Interfaces;
 using Storage.Common.Middleware;
@@ -39,8 +41,16 @@ namespace Storage.Datei
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddMvc();
+            services.AddMvc().ConfigureMvc(options =>
+            {
+                var jsonOutputFormatter = options.OutputFormatters.InstanceOf<JsonOutputFormatter>();
+                if (jsonOutputFormatter != null)
+                {
+                    jsonOutputFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                }
+            });
             services.AddSingleton<IStorageFileRepository, StorageFileRepository>();
+            services.AddSingleton<IMongoDbCrudRepository<StorageFile>, MongoDbCrudRepositoryBase<StorageFile>>();
             services.AddSingleton<IBlogPostRepository, BlogPostRepository>();
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton<FileManager>();

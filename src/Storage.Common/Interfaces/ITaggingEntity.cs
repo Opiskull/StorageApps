@@ -1,7 +1,10 @@
-﻿namespace Storage.Common.Interfaces
+﻿using System.Collections.Generic;
+using Storage.Common.Models;
+
+namespace Storage.Common.Interfaces
 {
     public interface ITaggingEntity
     {
-        string[] Tags { get; set; }
+        IEnumerable<Tag> Tags { get; set; }
     }
 }
